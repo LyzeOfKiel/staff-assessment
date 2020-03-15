@@ -1,0 +1,15 @@
+version: "2.4"
+
+services:
+  vue:
+    image: sa-vue
+    build: ./vue
+    ports:
+      - '8080:8080'
+    volumes:
+      - './vue/index.html:/app/index.html'
+      - './vue/src:/app/src'
+      - './vue/static:/app/static'
+
+volumes:
+  sockets:

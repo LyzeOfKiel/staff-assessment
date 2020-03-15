@@ -1,0 +1,13 @@
+version: "2.4"
+
+services:
+  nginx:
+    image: sa-nginx
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    ports:
+      - '8080:8080'
+
+volumes:
+  sockets:
