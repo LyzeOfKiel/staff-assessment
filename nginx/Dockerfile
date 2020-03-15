@@ -1,0 +1,26 @@
+FROM node:11-alpine as vue
+
+ARG CONTEXT=vue
+
+WORKDIR /app
+
+COPY $CONTEXT/package*.json ./
+
+RUN npm ci
+
+COPY ./$CONTEXT ./
+
+RUN npm run build
+
+
+FROM nginx:1.15.8
+
+ARG CONTEXT=nginx
+
+COPY $CONTEXT/config /etc/nginx
+
+COPY --from=vue /app/dist /var/www
+
+EXPOSE "8080"
+
+VOLUME ["/tmp/sockets"]
