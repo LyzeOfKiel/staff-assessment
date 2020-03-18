@@ -1,0 +1,9 @@
+FROM nginx:1.15.8
+
+ARG CONTEXT=nginx
+
+COPY $CONTEXT/dev-config /etc/nginx
+
+EXPOSE "8001"
+
+VOLUME ["/tmp/sockets"]
