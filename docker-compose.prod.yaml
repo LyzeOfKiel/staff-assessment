@@ -5,9 +5,27 @@ services:
     image: sa-nginx
     build:
       context: .
-      dockerfile: nginx/Dockerfile
+      dockerfile: nginx/Dockerfile.prod
     ports:
       - '8080:8080'
+    volumes:
+      - "sockets:/tmp/sockets"
+
+  web:
+    image: argus-web
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+      args:
+        BASE_DIR: ./web
+    environment:
+      UWSGI_PROCESSES: 1
+      UWSGI_THREADS: 2
+      UWSGI_HARAKIRI: 60
+      UWSGI_MAX_REQUESTS: 100
+    volumes:
+      - "sockets:/tmp/sockets"
+      - "./web:/application"
 
 volumes:
   sockets:

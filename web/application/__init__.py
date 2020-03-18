@@ -15,6 +15,6 @@ def create_app(config=None):
     # Register all blueprints to the app
     from application.views import auth
 
-    app.register_blueprint(auth.bp)
+    app.register_blueprint(auth.bp, url_prefix='/api')
 
     return app

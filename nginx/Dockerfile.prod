@@ -19,7 +19,7 @@ ARG CONTEXT=nginx
 
 COPY $CONTEXT/prod-config /etc/nginx
 
-COPY --from=vue /app/dist /var/www
+COPY --from=vue /app/dist /app
 
 EXPOSE "8080"
 

@@ -4,6 +4,6 @@ ARG CONTEXT=nginx
 
 COPY $CONTEXT/dev-config /etc/nginx
 
-EXPOSE "8001"
+EXPOSE "8080"
 
 VOLUME ["/tmp/sockets"]
