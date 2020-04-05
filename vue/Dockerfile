@@ -2,10 +2,10 @@ FROM node:11-alpine
 
 WORKDIR /app
 
-COPY ./package*.json ./
+COPY docker-entrypoint.sh .
 
-RUN npm install
+COPY ./dot-files .
 
-COPY . .
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
 CMD ["npm", "run", "dev"]
