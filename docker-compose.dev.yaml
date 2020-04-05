@@ -38,5 +38,11 @@ services:
       - "sockets:/tmp/sockets"
       - "./web:/application"
 
+  db:
+    image: mongo:latest
+    container_name: 'mongodb'
+    volumes:
+      - $DATABASE_PATH:/data/db
+
 volumes:
   sockets:
