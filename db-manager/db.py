@@ -14,6 +14,9 @@ class Manager:
         self.course = self.db['course']
         self.admin = self.db['admin']
 
+    def drop_db(self):
+        self.client.drop_database('staff_assessment')
+
     def get_student(self, email):
         x = self.student.find_one({'email': email})
         return x
@@ -130,61 +133,63 @@ class Manager:
         }
         self.feedback.insert_one(data)
 
+    def generator(self):
+        fake = Faker()
+        self.drop_db()
+
+        student_emails = []
+        for i in range(20):
+            n = fake.name().split(' ')
+            email = f'{n[0][0].lower()}.{n[1].lower()}@innopolis.university.ru'
+            student_emails.append(email)
+            self.set_student(n[0], n[1], email, [])
+
+        prof_emails = []
+        for i in range(20):
+            n = fake.name().split(' ')
+            email = f'{n[0][0].lower()}.{n[1].lower()}@innopolis.ru'
+            prof_emails.append(email)
+            self.set_professor(n[0], n[1], email, [])
+
+        ta_emails = []
+        for i in range(20):
+            n = fake.name().split(' ')
+            email = f'{n[0][0].lower()}.{n[1].lower()}@innopolis.ru'
+            ta_emails.append(email)
+            self.set_ta(n[0], n[1], email, [])
+
+        def gen_course(name, year, professor, ta, students):
+            professor = self.get_professor(professor)
+            tas_data = []
+            tas_id = []
+            for ta_email in ta:
+                tas_data.append(m.get_ta(ta_email))
+                tas_id.append(tas_data[len(tas_data) - 1]['_id'])
+            self.set_course(name, year, professor['_id'], tas_id)
+            c = self.get_course(name, year)
+            professor['courses'].append(c['_id'])
+            result = self.prof.replace_one({'_id': professor['_id']},
+                                        professor)
+
+            for t in tas_data:
+                t['courses'].append(c['_id'])
+                result = self.ta.replace_one({'_id': t['_id']}, t)
+
+            for s in students:
+                student = self.get_student(s)
+                student['courses'].append(c['_id'])
+                result = self.student.replace_one({'_id': student['_id']},
+                                               student)
+
+        info_courses = [('Maths', 2020), ('Sowftware Project', 2020),
+                        ('English', 2019), ('Linear Algebra', 2019)]
+
+        for course in info_courses:
+            cur_prof = rm.choice(prof_emails)
+            cur_ta = [rm.choice(ta_emails) for _ in range(4)]
+            cur_stu = [rm.choice(student_emails) for _ in range(10)]
+            gen_course(course[0], course[1], cur_prof, cur_ta, cur_stu)
 
 if __name__ == '__main__':
-    fake = Faker()
     m = Manager()
-
-    student_emails = []
-    for i in range(20):
-        n = fake.name().split(' ')
-        email = f'{n[0][0].lower()}.{n[1].lower()}@innopolis.university.ru'
-        student_emails.append(email)
-        m.set_student(n[0], n[1], email, [])
-
-    prof_emails = []
-    for i in range(20):
-        n = fake.name().split(' ')
-        email = f'{n[0][0].lower()}.{n[1].lower()}@innopolis.ru'
-        prof_emails.append(email)
-        m.set_professor(n[0], n[1], email, [])
-
-    ta_emails = []
-    for i in range(20):
-        n = fake.name().split(' ')
-        email = f'{n[0][0].lower()}.{n[1].lower()}@innopolis.ru'
-        ta_emails.append(email)
-        m.set_ta(n[0], n[1], email, [])
-
-
-    def gen_course(name, year, professor, ta, students):
-        professor = m.get_professor(professor)
-        tas_data = []
-        tas_id = []
-        for ta_email in ta:
-            tas_data.append(m.get_ta(ta_email))
-            tas_id.append(tas_data[len(tas_data) - 1]['_id'])
-        m.set_course(name, year, professor['_id'], tas_id)
-        c = m.get_course(name, year)
-        professor['courses'].append(c['_id'])
-        result = m.prof.replace_one({'_id': professor['_id']},
-                                    professor)
-
-        for t in tas_data:
-            t['courses'].append(c['_id'])
-            result = m.ta.replace_one({'_id': t['_id']}, t)
-
-        for s in students:
-            student = m.get_student(s)
-            student['courses'].append(c['_id'])
-            result = m.student.replace_one({'_id': student['_id']},
-                                           student)
-
-    info_courses = [('Maths', 2020), ('Sowftware Project', 2020),
-                    ('English', 2019), ('Linear Algebra', 2019)]
-
-    for course in info_courses:
-        cur_prof = rm.choice(prof_emails)
-        cur_ta = [rm.choice(ta_emails) for _ in range(4)]
-        cur_stu = [rm.choice(student_emails) for _ in range(10)]
-        gen_course(course[0], course[1], cur_prof, cur_ta, cur_stu)
+    m.generator()
