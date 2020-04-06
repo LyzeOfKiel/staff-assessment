@@ -6,7 +6,6 @@ from faker import Faker
 class Manager:
     def __init__(self):
         self.client = pymongo.MongoClient("mongodb://db")
-        self.client.drop_database('staff_assessment')
         self.db = self.client['staff_assessment']
         self.student = self.db['student']
         self.ta = self.db['ta']
@@ -121,6 +120,9 @@ class Manager:
         return arr
 
     def set_feedback(self, course_id, f_type, feedback):
+        # 0 - course
+        # 1 - prof
+        # 2 - TA
         data = {
             'course_id': course_id,
             'f_type': f_type,

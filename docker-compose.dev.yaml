@@ -35,7 +35,9 @@ services:
     volumes:
       - "sockets:/tmp/sockets"
       - "./web:/application"
-      - "./db-manager:/application/db"
+      - "./db-manager:/application/application/db"
+    depends_on:
+      - db
 
   db:
     image: mongo:latest
