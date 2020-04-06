@@ -163,7 +163,7 @@ class Manager:
             tas_data = []
             tas_id = []
             for ta_email in ta:
-                tas_data.append(m.get_ta(ta_email))
+                tas_data.append(self.get_ta(ta_email))
                 tas_id.append(tas_data[len(tas_data) - 1]['_id'])
             self.set_course(name, year, professor['_id'], tas_id)
             c = self.get_course(name, year)

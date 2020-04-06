@@ -9,20 +9,9 @@ bp = Blueprint('get_methods', __name__)
 
 @bp.route('/get_courses', methods=['GET'])
 def get_courses():
-    return jsonify(
-        {
-            'name': 'Math',
-            'id': 4
-        },
-        {
-            'name': 'Eng',
-            'id': 42
-        },
-        {
-            'name': 'Other',
-            'id': 3
-        },
-    )
+    data = get_db().get_all_courses()
+    data = [{'name': f['name'], 'id': str(f['_id'])} for f in data]
+    return jsonify(data)
 
 
 @bp.route('/get_all_feedbacks', methods=['Get'])

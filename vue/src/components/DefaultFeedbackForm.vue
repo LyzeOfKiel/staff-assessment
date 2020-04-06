@@ -4,10 +4,9 @@
       <v-select
         v-model="fields.form.general"
         :items="grade_options"
-        :disabled="disabled"
         label="How do you like it?"
       >
-        <template v-if="selectSlot" v-slot:selection="{ item, index }">
+        <template v-slot:selection="{ item, index }">
           <v-chip v-if="index === 0">
             <span>{{ item }}</span>
           </v-chip>
@@ -56,7 +55,6 @@
       }
     },
     created() {
-      console.log(2378)
     },
     methods: {
       submit() {

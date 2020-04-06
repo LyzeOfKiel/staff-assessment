@@ -9,7 +9,6 @@
         <v-list-item
           v-for="course in available_courses"
           v-bind:key="course.id"
-          active-class="is-active"
           class="link"
           :to="{ name: 'dff', params: { course_id: course.id } }">
 

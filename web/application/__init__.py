@@ -15,7 +15,8 @@ def create_app(config=None):
     #
 
     with app.app_context():
-        get_db().set_student('first_name', 'last_name', 'email', {})
+        get_db().drop_db()
+        get_db().generator()
 
     # Register all blueprints to the app
     from application.views import auth, \
