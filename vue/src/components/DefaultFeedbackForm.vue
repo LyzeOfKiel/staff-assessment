@@ -1,27 +1,40 @@
 <template>
-  <div class="post">
-    <!--    action="http://localhost:8080/api/set_dfeedback_course" method="post"-->
-    <form @submit.prevent="submit">
-      <label for="general">How do you like it?</label>
-      <select id="general" name="grade" v-model="fields.form.general">
-        <option value="1">Very good</option>
-        <option value="2">Good</option>
-        <option value="3">Not good</option>
-        <option value="4">Bad</option>
-      </select>
+  <!--    action="http://localhost:8080/api/set_dfeedback_course" method="post"-->
+  <v-form @submit.prevent="submit" ref="form">
+      <v-select
+        v-model="fields.form.general"
+        :items="grade_options"
+        :disabled="disabled"
+        label="How do you like it?"
+      >
+        <template v-if="selectSlot" v-slot:selection="{ item, index }">
+          <v-chip v-if="index === 0">
+            <span>{{ item }}</span>
+          </v-chip>
+          <span
+            v-if="index === 1"
+            class="grey--text caption"
+          >(+{{ model.length - 1 }} others)</span>
+        </template>
+      </v-select>
 
-      <p>
-        <label for="feedbackText">Other feedback?</label>
-        <input name="age" id="feedbackText" v-model="fields.form.feedbackText">
-      </p>
+    <v-text-field
+      v-model="fields.form.feedbackText"
+      label="Other feedback"
+      required
+    ></v-text-field>
 
 
-      <p>
-        <input type="submit" value="Submit">
-      </p>
+    <v-btn
+      color="success"
+      class="mr-4"
+      @click="submit"
+    >
+      Submit
+    </v-btn>
 
-    </form>
-  </div>
+
+  </v-form>
 </template>
 
 <script>
@@ -36,10 +49,14 @@
     },
     data() {
       return {
+        grade_options: ['Very good', 'Good', 'Not good', 'Bad'],
         fields: {form: {}},
         errors: {},
         endpoint: 'http://localhost:8080/api',
       }
+    },
+    created() {
+      console.log(2378)
     },
     methods: {
       submit() {
