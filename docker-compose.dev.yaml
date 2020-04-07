@@ -21,7 +21,7 @@ services:
 
 
   web:
-    image: argus-web
+    image: sa-web
     build:
       context: .
       dockerfile: web/Dockerfile
