@@ -15,7 +15,7 @@ services:
     image: sa-web
     build:
       context: .
-      dockerfile: web/Dockerfile
+      dockerfile: web/Dockerfile.dev
       args:
         BASE_DIR: ./web
     environment:

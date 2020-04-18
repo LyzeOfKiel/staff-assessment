@@ -1,12 +1,6 @@
-Click==7.0
-Flask==1.1.1
-Flask-Login==0.4.1
-itsdangerous==1.1.0
-Jinja2==2.10.3
-MarkupSafe==1.1.1
-Werkzeug==0.16.0
-pymongo==3.9.0
-pytest==5.3.5
+Django==3.0.5
+psycopg2-binary==2.8.4
 uwsgi==2.0.18
-Flask-Cors==3.0.8
-Faker==4.0.2
+djangorestframework==3.11.0
+django-cors-headers==3.2.1
+djangorestframework-simplejwt==4.4.0

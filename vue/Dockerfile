@@ -1,11 +1,11 @@
-FROM node:11-alpine
+FROM node:13
 
 WORKDIR /app
 
-COPY docker-entrypoint.sh .
+COPY package*.json ./
 
-COPY ./dot-files .
+RUN npm install
 
-ENTRYPOINT ["/app/docker-entrypoint.sh"]
+COPY . .
 
 CMD ["npm", "run", "dev"]

@@ -2,7 +2,7 @@
   <div>
     <v-card width="400" class="mx-auto mt-5">
       <v-card-title class="pb-0">
-        <h1>Sign up</h1>
+        <h1>Sign in</h1>
       </v-card-title>
       <v-card-text>
         <v-form>
@@ -22,24 +22,11 @@
 
           </v-text-field>
 
-          <v-radio-group v-model="userType" label="Select user type">
-            <v-radio
-              label="Student"
-              value="Student">
-            </v-radio>
-            <v-radio
-              label="TA"
-              value="TA">
-            </v-radio>
-            <v-radio
-              label="Prof"
-              value="Prof">
-            </v-radio>
-          </v-radio-group>
         </v-form>
       </v-card-text>
       <v-card-actions>
-        <v-btn @click="registerUser" color="yellow" test-id="btn-register">Register</v-btn>
+        <v-btn @click="login" color="yellow">Login</v-btn>
+        <v-btn @click="login" color="yellow" to="/register">Register here</v-btn>
       </v-card-actions>
     </v-card>
   </div>
@@ -49,23 +36,20 @@
   import axios from 'axios'
 
   export default {
-    name: "Auth",
+    name: "Login",
     data: () => ({
       username: null,
       password: null,
-      showPassword: false,
-      userType: null,
+      showPassword: false
     }),
     created() {
     },
     methods: {
-      registerUser() {
-        return this.axiosInstance.post('auth/register/',
+      login() {
+        return this.axiosInstance.post('token/',
           {
             'username': this.username,
-            'password': this.password,
-            'email': '',
-            'user_type': this.userType,
+            'password': this.password
           }).then(({data}) => {
           localStorage.setItem('tokens', JSON.stringify(data))
           this.axiosInstance.defaults.headers['Authorization'] = `Bearer ${

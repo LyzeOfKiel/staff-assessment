@@ -1,4 +1,4 @@
-version: "2.4"
+version: "3"
 
 services:
   vue:
@@ -7,43 +7,48 @@ services:
     ports:
       - '8001:8001'
     volumes:
-      - "./vue:/app"
+      - "./vue/src:/app/src"
 
-  nginx:
-    image: sa-nginx
+  django:
     build:
-      context: .
-      dockerfile: nginx/Dockerfile.dev
+      context: web
+      dockerfile: Dockerfile.dev
+    image: sa-django
+    volumes:
+      - "./web:/app"
+      - "sockets:/tmp/sockets"
+      - "./data:/var/data"
     ports:
-      - '8080:8080'
-    volumes:
-      - "sockets:/tmp/sockets"
-
-
-  web:
-    image: sa-web
-    build:
-      context: .
-      dockerfile: web/Dockerfile
-      args:
-        BASE_DIR: ./web
+      - "127.0.0.1:8000:8000"
     environment:
-      UWSGI_PROCESSES: 1
-      UWSGI_THREADS: 2
-      UWSGI_HARAKIRI: 60
-      UWSGI_MAX_REQUESTS: 100
-    volumes:
-      - "sockets:/tmp/sockets"
-      - "./web:/application"
-      - "./db-manager:/application/application/db"
+      DJANGO_DEBUG: "True"
+      DJANGO_APP_NAME: "sa"
+      DJANGO_SECRET_KEY: "khwfwtspowlhf7mk8jekzz6wny5aa1sztt"
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1"
+      DJANGO_DATABASE_NAME: "pgdb"
+      DJANGO_DATABASE_USER: "pguser"
+      DJANGO_DATABASE_PASSWORD: "pgpassword"
+      DJANGO_DATABASE_HOST: "postgres"
+      DJANGO_DATABASE_PORT: "5432"
+      UWSGI_PROCESSES: "2"
+      UWSGI_THREADS: "2"
+      UWSGI_HARAKIRI: "60"
+      UWSGI_MAX_REQUESTS: "100"
     depends_on:
-      - db
+      - postgres
+    restart: "no"
 
-  db:
-    image: mongo:latest
-    container_name: 'mongodb'
+  postgres:
+    image: "postgres:12"
     volumes:
-      - $DATABASE_PATH:/data/db
+      - "postgres-data:/var/lib/postgresql/data"
+    environment:
+      - "PGDATA=/var/lib/postgresql/data/pgdata"
+      - "POSTGRES_DB=pgdb"
+      - "POSTGRES_USER=pguser"
+      - "POSTGRES_PASSWORD=pgpassword"
+    restart: "no"
 
 volumes:
+  postgres-data:
   sockets:
