@@ -7,6 +7,7 @@
     >
       <Courses/>
     </v-navigation-drawer>
+
     <v-app-bar
       app
       dense
@@ -38,19 +39,10 @@
         </v-list>
       </v-menu>
     </v-app-bar>
+
     <v-content>
       <v-container fluid>
-        <v-row>
-          <v-col cols="12">
-            <v-row
-              align="center"
-              justify="center"
-              style="height: auto;"
-            >
 
-            </v-row>
-          </v-col>
-        </v-row>
       </v-container>
     </v-content>
   </div>
@@ -63,7 +55,7 @@
     name: "Main",
     components: {Courses},
     data: () => ({
-      drawer: null
+      drawer: true
     })
   }
 </script>

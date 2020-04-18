@@ -5,20 +5,14 @@ from rest_framework import (
     response,
     permissions,
     status,
-    viewsets,
 )
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, permission_classes
 
-from .serializers import UserCreateSerializer, UserSerializer
+from .serializers import UserCreateSerializer
 
 
 User = get_user_model()
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
 
 
 @api_view(["POST"])
