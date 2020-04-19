@@ -5,8 +5,10 @@ import DefaultFeedbackForm from '@/components/DefaultFeedbackForm'
 import FeedbackStatistics from '@/components/FeedbackStatistics'
 import Main from '@/components/Main'
 import Login from "../components/Login";
+import Survey from "../components/Survey";
+// import Courses from '@components/Courses';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   mode: 'history',
@@ -22,12 +24,6 @@ export default new Router({
       component: Auth
     },
     {
-      path: '/feedback/:course_id',
-      name: 'dff',
-      component: DefaultFeedbackForm,
-      props: true
-    },
-    {
       path: '/stats',
       name: 'stats',
       component: FeedbackStatistics
@@ -35,7 +31,15 @@ export default new Router({
     {
       path: '/main',
       name: 'main',
-      component: Main
+      component: Main,
+      children: [
+        {
+          path: 'survey/:course/:type',
+          name: 'survey',
+          component: Survey,
+          props: true
+        },
+      ]
     }
   ]
 })
