@@ -33,10 +33,13 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        group = str(Group.objects.filter(user=user).first())
 
-        if group == 'Student':
-            return Course.objects.filter(students=user)
+        if not user.is_anonymous:
+            group = str(Group.objects.filter(user=user).first())
+            if group == 'Student':
+                return Course.objects.filter(students=user)
+            else:
+                return Course.objects
 
         return Course.objects
 
