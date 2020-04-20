@@ -50,13 +50,24 @@
           {
             'username': this.username,
             'password': this.password
-          }).then(({data}) => {
-          localStorage.setItem('tokens', JSON.stringify(data))
-          this.axiosInstance.defaults.headers['Authorization'] = `Bearer ${
-            data.access
-          }`;
-          this.$router.push({name: 'main'})
-        })
+          })
+          .then(({data}) => {
+            localStorage.setItem('tokens', JSON.stringify(data))
+            this.axiosInstance.interceptors.request.use(
+              config => {
+                const tokens = JSON.parse(localStorage.getItem('tokens'));
+
+                if (tokens) {
+                  const token = tokens.access
+
+                  if (token) {
+                    config.headers.Authorization = `Bearer ${token}`;
+                  }
+                }
+                return config;
+              })
+            this.$router.push({name: 'main'})
+          })
       }
     }
   }
