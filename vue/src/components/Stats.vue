@@ -1,19 +1,19 @@
 <template>
   <v-row align="center">
     <v-card
-      class="mx-auto"
-      max-width="800"
-      tile
+        class="mx-auto"
+        max-width="800"
+        tile
     >
       <v-list
       >
         <v-subheader>Stats</v-subheader>
         <v-list-item-group color="primary">
           <v-list-item
-            v-for="(rate, course_name) of stats"
-            :key="course_name"
+              v-for="course of stats"
+              :key="course.name"
           >
-            {{course_name}}: {{rate}}
+            {{course['name']}} : {{course['rate']}}
           </v-list-item>
         </v-list-item-group>
       </v-list>
@@ -26,7 +26,7 @@
   export default {
     name: "Stats",
     data: () => ({
-      stats: null
+      stats: []
     }),
     created() {
       this.getStats()
@@ -35,8 +35,13 @@
       getStats() {
         this.axiosInstance.get('models/stats/')
           .then(({data}) => {
-            this.stats = data
+            const courseRate = Object.keys(data)
+              .map(key => ({name: key, rate: data[key]}));
+            this.stats = courseRate.sort((a, b) => {
+              return b['rate'] - a['rate']
+            });
           })
+
       }
     }
   }
