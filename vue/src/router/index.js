@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Auth from '@/components/Auth'
 import DefaultFeedbackForm from '@/components/DefaultFeedbackForm'
-import FeedbackStatistics from '@/components/FeedbackStatistics'
+import Stats from "@/components/Stats";
 import Main from '@/components/Main'
 import Login from "../components/Login";
 import Survey from "../components/Survey";
@@ -24,11 +24,6 @@ export default new Router({
       component: Auth
     },
     {
-      path: '/stats',
-      name: 'stats',
-      component: FeedbackStatistics
-    },
-    {
       path: '/main',
       name: 'main',
       component: Main,
@@ -38,6 +33,11 @@ export default new Router({
           name: 'survey',
           component: Survey,
           props: true
+        },
+        {
+          path: '/stats',
+          name: 'stats',
+          component: Stats
         },
       ]
     }

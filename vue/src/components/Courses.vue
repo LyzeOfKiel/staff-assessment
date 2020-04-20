@@ -36,7 +36,10 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item>
+        <v-list-item
+          class="link"
+          :to="{name: 'stats'}"
+        >
           Stats
         </v-list-item>
       </v-list>
@@ -55,9 +58,10 @@
     },
     methods: {
       getCourses() {
-        return this.axiosInstance.get('courses/')
+        return this.axiosInstance.get('models/courses/')
           .then(({data}) => {
             this.courses = data
+            console.log(data)
           })
       }
     }
