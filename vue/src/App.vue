@@ -13,10 +13,14 @@
     created() {
       this.axiosInstance.interceptors.request.use(
         config => {
-          const token = JSON.parse(localStorage.getItem('tokens')).access;
+          const tokens = JSON.parse(localStorage.getItem('tokens'));
 
-          if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+          if (tokens) {
+            const token = tokens.access
+
+            if (token) {
+              config.headers.Authorization = `Bearer ${token}`;
+            }
           }
 
           return config;
