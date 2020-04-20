@@ -61,7 +61,6 @@
         return this.axiosInstance.get('models/courses/')
           .then(({data}) => {
             this.courses = data
-            console.log(data)
           })
       }
     }
