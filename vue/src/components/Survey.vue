@@ -1,13 +1,63 @@
 <template>
-  <div>
-    <h1>Please leave your feedback for {{course}} {{type}}</h1>
-    <div v-if="type==='Course'">
-      <p> How would you rate the course?</p>
-      <p> What materials were useful for understanding the course?</p>
-      <p> What improvements would you make to the course? </p>
+  <v-container fluid>
+    <v-row
+      justify="center"
+      no-gutters
+    >
+      <v-col
+        :cols="8"
+      >
+        <v-form @submit.prevent="submit" ref="form">
+          <v-select
+            v-model="fields.form.rate"
+            :items="grade_options"
+            label="How do you like it?"
+          >
+            <template v-slot:selection="{ item, index }">
+              <v-chip v-if="index === 0">
+                <span>{{ item }}</span>
+              </v-chip>
+              <span
+                v-if="index === 1"
+                class="grey--text caption"
+              >(+{{ model.length - 1 }} others)</span>
+            </template>
+          </v-select>
 
-    </div>
-  </div>
+          <v-text-field
+            v-model="fields.form.feedback"
+            label="Other feedback"
+            required
+          ></v-text-field>
+
+
+          <v-btn
+            color="success"
+            class="mr-4"
+            @click="submit"
+          >
+            Submit
+          </v-btn>
+
+
+          <v-row>
+            <v-col>
+              <v-dialog v-model="show" max-width="290">
+                <v-card>
+                  <v-card-title class="headline">Success!</v-card-title>
+                  <v-card-text>Feedback sent</v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" text @click="show = false">Ok</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-col>
+          </v-row>
+        </v-form>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -15,7 +65,22 @@
     name: "Survey",
     props: ['course', 'type'],
     data: () => ({
+      fields: {form: {}},
+      grade_options: [1, 2, 3, 4, 5],
+      show: false
     }),
+    methods: {
+      submit() {
+        this.fields.form.course = this.course
+        this.axiosInstance.post('models/feedback/', this.fields.form, {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }).then(() => {
+          this.show = true
+        })
+      }
+    }
   }
 
 </script>

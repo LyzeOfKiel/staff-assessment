@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "7.9.5",
+    "@babel/preset-stage-0": "7.8.3",
     "@mdi/font": "5.0.45",
     "@vue/cli": "4.3.0",
     "autoprefixer": "^7.1.2",

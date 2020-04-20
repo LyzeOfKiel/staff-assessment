@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 class Course(models.Model):
     name = models.CharField(max_length=50)
-    students = models.ManyToManyField(User)
+    students = models.ManyToManyField(User, related_name='courses')
 
 
 class FeedbackDefault(models.Model):
