@@ -17,6 +17,30 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
+      <v-list-item
+          v-for="(course, i) of answers"
+          :key="course.name"
+      >
+        <v-container>
+          <v-row
+            justify="center"
+          >
+            {{course['course']}}
+          </v-row>
+          <v-row>
+            <div id="chart">
+              <apexchart
+                  type="pie"
+                  width="380"
+                  :options="chartOptions"
+                  :series="course['series']"
+              >
+              </apexchart>
+            </div>
+          </v-row>
+        </v-container>
+      </v-list-item>
+
     </v-card>
   </v-row>
 
@@ -26,10 +50,31 @@
   export default {
     name: "Stats",
     data: () => ({
-      stats: []
+      stats: [],
+      answers: [],
+      series: [],
+      chartOptions: {
+        chart: {
+          width: 380,
+          type: 'pie',
+        },
+        labels: ['1', '2', '3', '4', '5'],
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }],
+      }
     }),
     created() {
-      this.getStats()
+      this.getStats();
+      this.getChart();
     },
     methods: {
       getStats() {
@@ -41,7 +86,45 @@
               return b['rate'] - a['rate']
             });
           })
-
+      },
+      getChart() {
+        this.axiosInstance.get('models/feedback/')
+          .then(({data}) => {
+            let course = [];
+            data.forEach(feedback => {
+              const found = course.find(element =>
+                element['course'] === feedback['course']);
+              if (found) {
+                found['feedback'].push(feedback['feedback']);
+                found['series'][feedback['rate'] - 1]++;
+              } else {
+                let el = {
+                  'course': feedback['course'],
+                  'feedback': [feedback['feedback']],
+                  'series': [0, 0, 0, 0, 0]
+                };
+                el['series'][feedback['rate'] - 1]++;
+                course.push(el)
+              }
+            });
+            this.answers = course;
+          })
+          .then(async () => {
+            const id_name = await this.getRelIdName();
+            for (let c of this.answers) {
+              c['course'] = id_name[c['course']]
+            }
+          })
+      },
+      getRelIdName() {
+        return this.axiosInstance.get('models/courses/')
+          .then(({data}) => {
+            const id_name = {};
+            for (let c of data) {
+              id_name[c['id']] = c['name']
+            }
+            return id_name
+          })
       }
     }
   }

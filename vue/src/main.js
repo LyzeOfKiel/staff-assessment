@@ -7,6 +7,9 @@ import router from './router'
 import 'vuetify/dist/vuetify.min.css'
 import '@mdi/font/css/materialdesignicons.css'
 import axios from 'axios'
+import VueApexCharts from 'vue-apexcharts'
+
+Vue.component('apexchart', VueApexCharts)
 
 const axiosInstance = axios.create({
   baseURL: 'http://127.0.0.1:8000/api/',

@@ -29,12 +29,8 @@
         </template>
 
         <v-list>
-          <v-list-item
-            v-for="n in 5"
-            :key="n"
-            @click="() => {}"
-          >
-            <v-list-item-title>Option {{ n }}</v-list-item-title>
+          <v-list-item>
+            <v-btn @click="logout">Logout</v-btn>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -56,7 +52,13 @@
     components: {Courses},
     data: () => ({
       drawer: true
-    })
+    }),
+    methods: {
+      logout() {
+        this.$router.push({name: 'Login'});
+        localStorage.removeItem('tokens')
+      }
+    }
   }
 </script>
 
