@@ -1,7 +1,7 @@
 # IU Software Project (Spring semester 2020)
 Staff-assessment service for Innopolis University students  
 Technologies used:  
-* **Backend**: Flask
+* **Backend**: Django REST
 * **Frontend**: Vue.js & Vuetify
 * **Databse**: MongoDB
 * **Server**: nginx
