@@ -3,11 +3,11 @@ from django.contrib.auth import get_user_model
 
 from rest_framework import (
     response,
-    permissions,
     status,
+    viewsets,
 )
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .serializers import UserCreateSerializer
 
@@ -15,27 +15,35 @@ from .serializers import UserCreateSerializer
 User = get_user_model()
 
 
-@api_view(["POST"])
-@permission_classes([permissions.AllowAny])
-def registration(request):
-    serializer = UserCreateSerializer(data=request.data)
-    if not serializer.is_valid():
-        return response.Response(
-            serializer.errors,
-            status.HTTP_400_BAD_REQUEST
-        )
-    user = serializer.save()
-    group_name = request.data["user_type"]
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserCreateSerializer
 
-    # TODO assert group name is allowed
+    def get_permissions(self):
+        if self.action in ['create']:
+            self.permission_classes = [AllowAny, ]
+        else:
+            self.permission_classes = [IsAuthenticated, ]
+        return super(self.__class__, self).get_permissions()
 
-    # Assign user to group
-    group, created = Group.objects.get_or_create(name=group_name)
-    group.user_set.add(user)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            return response.Response(
+                serializer.errors,
+                status.HTTP_400_BAD_REQUEST
+            )
+        user = serializer.save()
 
-    refresh = RefreshToken.for_user(user)
-    res = {
-        "refresh": str(refresh),
-        "access": str(refresh.access_token),
-    }
-    return response.Response(res, status.HTTP_201_CREATED)
+        group_name = request.data['user_type']
+
+        # Assign user to group
+        group, created = Group.objects.get_or_create(name=group_name)
+        group.user_set.add(user)
+
+        refresh = RefreshToken.for_user(user)
+        res = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+        return response.Response(res, status.HTTP_201_CREATED)

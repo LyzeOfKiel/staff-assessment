@@ -60,7 +60,7 @@
     },
     methods: {
       registerUser() {
-        return this.axiosInstance.post('auth/register/',
+        return this.axiosInstance.post('auth/users/',
           {
             'username': this.username,
             'password': this.password,
