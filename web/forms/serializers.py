@@ -2,12 +2,35 @@ from django.contrib.auth.models import User
 
 from rest_framework import serializers
 
-from .models import FeedbackDefault, Course
+from .models import FeedbackCourse, FeedbackProf, FeedbackTA, Course
 
 
-class FeedbackDefaultSerializer(serializers.ModelSerializer):
+class FeedbackCoursePostSerializer(serializers.ModelSerializer):
     class Meta:
-        model = FeedbackDefault
+        model = FeedbackCourse
+        fields = '__all__'
+
+
+class FeedbackCourseGetSerializer(serializers.ModelSerializer):
+    course = serializers.SlugRelatedField(
+        slug_field='name',
+        read_only=True,
+    )
+
+    class Meta:
+        model = FeedbackCourse
+        fields = '__all__'
+
+
+class FeedbackProfSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FeedbackProf
+        fields = '__all__'
+
+
+class FeedbackTASerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FeedbackTA
         fields = '__all__'
 
 

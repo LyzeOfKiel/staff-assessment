@@ -21,6 +21,11 @@ python manage.py migrate
 echo "done"
 echo
 
+echo "Populating database..."
+python manage.py populate
+echo "done"
+echo
+
 echo "Collecting static files..."
 python manage.py collectstatic --no-input
 echo "done"
