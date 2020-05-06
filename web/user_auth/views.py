@@ -9,15 +9,26 @@ from rest_framework import (
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from .serializers import UserCreateSerializer
+from .serializers import UserCreateSerializer, UserReadSerializer
 
 
 User = get_user_model()
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class RWSerializers(object):
+    write_serializer_class = None
+    read_serializer_class = None
+
+    def get_serializer_class(self):
+        if self.action in ["create", "update", "partial_update", "destroy"]:
+            return self.write_serializer_class
+        return self.read_serializer_class
+
+
+class UserViewSet(RWSerializers, viewsets.ModelViewSet):
     queryset = User.objects.all()
-    serializer_class = UserCreateSerializer
+    read_serializer_class = UserReadSerializer
+    write_serializer_class = UserCreateSerializer
 
     def get_permissions(self):
         if self.action in ['create']:

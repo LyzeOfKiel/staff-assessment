@@ -51,7 +51,7 @@
     name: "Main",
     components: {Courses},
     data: () => ({
-      drawer: true
+      drawer: false
     }),
     methods: {
       logout() {

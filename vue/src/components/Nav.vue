@@ -35,7 +35,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
 
   export default {
     name: "Nav",
@@ -44,25 +43,7 @@
       available_courses: [],
       endpoint: 'http://localhost:8080/api/courses',
     }),
-    created() {
-      this.getAllCourses()
-    },
     methods: {
-      // getAllCourses() {
-      //   axios.get(this.endpoint)
-      //     .then(response => {
-      //       this.available_courses = response.data;
-      //       console.log(this.available_courses)
-      //     })
-      //     .catch(error => {
-      //       console.log('-----error-------');
-      //       console.log(error);
-      //     })
-      // }
     }
   }
 </script>
-
-<style scoped>
-
-</style>

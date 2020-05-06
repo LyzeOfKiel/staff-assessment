@@ -1,11 +1,12 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Auth from '@/components/Auth'
-import DefaultFeedbackForm from '@/components/DefaultFeedbackForm'
+import Vue from 'vue';
+import Router from 'vue-router';
+import Auth from '@/components/Auth';
+import DefaultFeedbackForm from '@/components/DefaultFeedbackForm';
 import Stats from "@/components/Stats";
-import Main from '@/components/Main'
+import Main from '@/components/Main';
 import Login from "../components/Login";
 import Survey from "../components/Survey";
+import CourseStats from "@/components/CourseStats";
 // import Courses from '@components/Courses';
 
 Vue.use(Router);
@@ -16,12 +17,12 @@ export default new Router({
     {
       path: '/',
       name: 'Login',
-      component: Login
+      component: Login,
     },
     {
       path: '/register',
       name: 'Auth',
-      component: Auth
+      component: Auth,
     },
     {
       path: '/main',
@@ -32,14 +33,20 @@ export default new Router({
           path: 'survey/:course/:type',
           name: 'survey',
           component: Survey,
-          props: true
+          props: true,
         },
         {
           path: '/stats',
           name: 'stats',
-          component: Stats
+          component: Stats,
         },
+        {
+          path: '/stats/:course_id',
+          name: 'course_stats',
+          component: CourseStats,
+          props: true,
+        }
       ]
     }
   ]
-})
+});

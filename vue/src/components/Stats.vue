@@ -12,6 +12,8 @@
           <v-list-item
             v-for="course of stats"
             :key="course.name"
+            link
+            :to="courseLink(course.name)"
           >
             {{course['name']}} : {{course['rate']}}
           </v-list-item>
@@ -25,7 +27,7 @@
           <v-row
             justify="center"
           >
-            {{course['course']}}
+            {{course['name']}}
           </v-row>
           <v-row>
             <div id="chart">
@@ -50,9 +52,9 @@
   export default {
     name: "Stats",
     data: () => ({
+      courseId: {},
       stats: [],
       answers: [],
-      series: [],
       chartOptions: {
         chart: {
           width: 380,
@@ -73,10 +75,14 @@
       }
     }),
     created() {
+      this.getCourseIdRelation();
       this.getStats();
       this.getChart();
     },
     methods: {
+      courseLink(name){
+        return {name: 'course_stats', params: {course_id: this.courseId[name]}}
+      },
       getStats() {
         this.axiosInstance.get('models/stats/')
           .then(({data}) => {
@@ -91,24 +97,24 @@
       getFormattedChartData(feedbacks) {
         let courseStat = {};
         for (const fb of feedbacks) {
-          const rate = fb['rate']
-          if (!(fb.name in courseStat)) {
-            courseStat[fb.name] = [0, 0, 0, 0, 0];
+          const rate = fb['rate'];
+          if (!(fb.course in courseStat)) {
+            courseStat[fb.course] = [0, 0, 0, 0, 0];
           }
-          courseStat[fb.name][rate-1]++;
+          courseStat[fb.course][rate - 1]++;
         }
 
-        const formattedData = []
-        for (const courseName in courseStat){
+        const formattedData = [];
+        for (const courseName in courseStat) {
           formattedData.push({
             'name': courseName,
             'series': courseStat[courseName]
-          })
+          });
         }
-        return formattedData
+        return formattedData;
       },
       getChart() {
-        this.axiosInstance.get('models/feedback/')
+        this.axiosInstance.get('models/feedback_course/')
           .then(({data}) => {
             /*
             [
@@ -118,23 +124,16 @@
               }
             ]
              */
-            this.answers = this.getFormattedChartData(data)
-          })
-          .then(async () => {
-            const id_name = await this.getRelIdName();
-            for (let c of this.answers) {
-              c['course'] = id_name[c['course']];
-            }
+            this.answers = this.getFormattedChartData(data);
           });
       },
-      getRelIdName() {
-        return this.axiosInstance.get('models/courses/')
+      getCourseIdRelation() {
+        this.axiosInstance.get('models/courses/')
           .then(({data}) => {
-            const id_name = {};
-            for (let c of data) {
-              id_name[c['id']] = c['name'];
+            this.courseId = {}
+            for (const course of data) {
+              this.courseId[course.name] = course.id;
             }
-            return id_name;
           });
       }
     }

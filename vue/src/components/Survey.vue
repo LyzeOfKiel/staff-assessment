@@ -7,6 +7,8 @@
       <v-col
         :cols="8"
       >
+        <p v-if="type === 'Prof'"></p>
+
         <v-form @submit.prevent="submit" ref="form">
           <v-select
             v-model="fields.form.rate"
@@ -42,13 +44,13 @@
 
           <v-row>
             <v-col>
-              <v-dialog v-model="show" max-width="290">
+              <v-dialog v-model="showDialog" max-width="290">
                 <v-card>
                   <v-card-title class="headline">Success!</v-card-title>
                   <v-card-text>Feedback sent</v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="green darken-1" text @click="show = false">Ok</v-btn>
+                    <v-btn color="green darken-1" text @click="showDialog = false">Ok</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -67,17 +69,17 @@
     data: () => ({
       fields: {form: {}},
       grade_options: [1, 2, 3, 4, 5],
-      show: false
+      showDialog: false
     }),
     methods: {
       submit() {
         this.fields.form.course = this.course
-        this.axiosInstance.post('models/feedback/', this.fields.form, {
+        this.axiosInstance.post(`models/feedback_${this.type.toLowerCase()}/`, this.fields.form, {
           headers: {
             'Content-Type': 'application/json',
           }
         }).then(() => {
-          this.show = true
+          this.showDialog = true
         })
       }
     }

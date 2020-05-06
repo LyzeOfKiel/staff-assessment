@@ -1,10 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+import datetime
+
+
+def current_year():
+    return datetime.date.today().year
+
 
 class Course(models.Model):
     name = models.CharField(max_length=50)
     students = models.ManyToManyField(User, related_name='student_courses')
+    year = models.IntegerField(default=current_year)
     prof = models.ForeignKey(
         User,
         related_name='prof_courses',

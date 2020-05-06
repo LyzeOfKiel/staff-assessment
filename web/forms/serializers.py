@@ -22,6 +22,23 @@ class FeedbackCourseGetSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CourseGetSerializer(serializers.ModelSerializer):
+    course = serializers.SlugRelatedField(
+        slug_field='name',
+        read_only=True,
+    )
+
+    class Meta:
+        model = Course
+        fields = '__all__'
+
+
+class CoursePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = '__all__'
+
+
 class FeedbackProfSerializer(serializers.ModelSerializer):
     class Meta:
         model = FeedbackProf

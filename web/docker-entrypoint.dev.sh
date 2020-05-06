@@ -11,6 +11,11 @@ done
 echo "done"
 echo
 
+echo "Clear db..."
+python manage.py flush --no-input
+echo "done"
+echo
+
 echo "Making database migrations..."
 python manage.py makemigrations
 echo "done"

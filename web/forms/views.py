@@ -3,11 +3,13 @@ from django.contrib.auth.models import Group, User
 from rest_framework_simplejwt import authentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.decorators import action
 
 from .models import Course, FeedbackCourse, FeedbackProf, FeedbackTA
 from .serializers import FeedbackCourseGetSerializer, \
     FeedbackCoursePostSerializer, FeedbackProfSerializer, \
-    FeedbackTASerializer, CourseSerializer, StudentSerializer
+    FeedbackTASerializer, StudentSerializer, \
+    CourseGetSerializer, CoursePostSerializer
 
 
 class RWSerializers(object):
@@ -41,6 +43,16 @@ class FeedbackProfViewSet(viewsets.ModelViewSet):
     serializer_class = FeedbackProfSerializer
     authentication_classes = [authentication.JWTAuthentication]
 
+    def create(self, request, *args, **kwargs):
+        course_name = request.data['course']
+        matching_courses = Course.objects.filter(name=course_name)
+        course = matching_courses.first()
+        request.data['course'] = course.pk
+        if 'student' not in request.data:
+            request.data['student'] = request.user.id
+        request.data['prof'] = course.prof.pk
+        return super().create(request, *args, **kwargs)
+
 
 class FeedbackTAViewSet(viewsets.ModelViewSet):
     queryset = FeedbackTA.objects.all()
@@ -48,8 +60,9 @@ class FeedbackTAViewSet(viewsets.ModelViewSet):
     authentication_classes = [authentication.JWTAuthentication]
 
 
-class CourseViewSet(viewsets.ModelViewSet):
-    serializer_class = CourseSerializer
+class CourseViewSet(RWSerializers, viewsets.ModelViewSet):
+    read_serializer_class = CourseGetSerializer
+    write_serializer_class = CoursePostSerializer
     authentication_classes = [authentication.JWTAuthentication]
 
     def get_queryset(self):
@@ -72,10 +85,21 @@ class StudentViewSet(viewsets.ModelViewSet):
     queryset = User.objects.filter(groups__name='Student')
 
 
+class ProfViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.filter(groups__name='Prof')
+
+    @action(detail=True, methods=['GET'])
+    def all(self, request, pk):
+        feedbacks = FeedbackProf.objects.filter(prof=pk)
+        serializer = FeedbackProfSerializer(feedbacks, many=True)
+        data = serializer.data
+        return Response(data)
+
+
 class Stat(APIView):
     def get(self, request, format=None):
-        feedbacks = FeedbackDefault.objects.all()
-        serializer = FeedbackPostSerializer(feedbacks, many=True)
+        feedbacks = FeedbackCourse.objects.all()
+        serializer = FeedbackCoursePostSerializer(feedbacks, many=True)
         data = serializer.data
         course_id_feeds = {}
         for f in data:

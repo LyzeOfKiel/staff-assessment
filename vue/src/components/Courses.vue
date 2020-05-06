@@ -14,21 +14,21 @@
               <b>{{course.name}}</b>
             </v-list-item-title>
             <v-list-item
-                class="link"
+                link
                 :to="{name: 'survey', params:{'course': course.name, 'type':
                 'TA'
                 }}">
               TA
             </v-list-item>
             <v-list-item
-                class="link"
+                link
                 :to="{name: 'survey', params:{'course': course.name, 'type':
                 'Prof'
                 }}">
               Prof
             </v-list-item>
             <v-list-item
-                class="link"
+                link
                 :to="{name: 'survey', params:{'course': course.name,
                 'type':'Course'}}">
               Course
@@ -37,7 +37,7 @@
         </v-list-item>
 
         <v-list-item
-          class="link"
+          link
           :to="{name: 'stats'}"
         >
           Stats
