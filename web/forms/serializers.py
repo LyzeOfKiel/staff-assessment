@@ -57,6 +57,14 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class UserSerializer(serializers.ModelSerializer):
+    courses = CourseSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'courses')
+
+
 class StudentSerializer(serializers.ModelSerializer):
     student_courses = CourseSerializer(many=True, read_only=True)
 
