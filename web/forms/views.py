@@ -86,7 +86,7 @@ class CourseViewSet(RWSerializers, viewsets.ModelViewSet):
 
 
 class StudentViewSet(viewsets.ModelViewSet):
-    serializer_class = StudentSerializer
+    serializer_class = UserSerializer
     queryset = User.objects.filter(groups__name='Student')
 
 
@@ -104,6 +104,7 @@ class TAViewSet(viewsets.ModelViewSet):
 
 class ProfViewSet(viewsets.ModelViewSet):
     queryset = User.objects.filter(groups__name='Prof')
+    serializer_class = UserSerializer
 
     @action(detail=True, methods=['GET'])
     def all(self, request, pk):
