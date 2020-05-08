@@ -1,5 +1,6 @@
 <template>
-  <v-app-bar
+  <div>
+    <v-app-bar
     app
     color="cyan"
     dark
@@ -32,6 +33,7 @@
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
+  <div>
 </template>
 
 <script>
