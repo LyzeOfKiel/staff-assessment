@@ -7,6 +7,7 @@ import Main from '@/components/Main';
 import Login from "../components/Login";
 import Survey from "../components/Survey";
 import CourseStats from "@/components/CourseStats";
+import Stats_Profs from "@/components/Stats_Profs";
 // import Courses from '@components/Courses';
 
 Vue.use(Router);
@@ -41,10 +42,16 @@ export default new Router({
           component: Stats,
         },
         {
-          path: '/stats/:course_id',
+          path: '/stats/course/:course_id',
           name: 'course_stats',
           component: CourseStats,
           props: true,
+        },
+        {
+          path: '/stats/profs',
+          name: 'stats_profs',
+          component: Stats_Profs,
+          props: true
         }
       ]
     }

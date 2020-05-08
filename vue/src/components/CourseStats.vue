@@ -72,6 +72,7 @@
       getProf() {
         return this.axiosInstance.get(`auth/users/${this.course.prof}/`)
           .then(({data}) => {
+            console.log(data)
             this.prof = data;
           });
       },

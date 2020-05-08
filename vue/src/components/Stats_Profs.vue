@@ -7,10 +7,10 @@
     >
       <v-list
       >
-        <v-subheader>Courses Stats</v-subheader>
+        <v-subheader>Professors Stats</v-subheader>
         <v-list-item-group color="primary">
-          <v-list-item :to="{name: 'stats_profs'}">
-            Professors
+          <v-list-item :to="{name: 'stats'}">
+            Courses
           </v-list-item>
 
           <v-list-item
@@ -24,14 +24,14 @@
         </v-list-item-group>
       </v-list>
       <v-list-item
-        v-for="(course, i) of answers"
-        :key="course.name"
+        v-for="(prof, i) of answers"
+        :key="prof.id"
       >
         <v-container>
           <v-row
             justify="center"
           >
-            {{course['name']}}
+            Prof Id: {{prof['id']}}
           </v-row>
           <v-row>
             <div id="chart">
@@ -39,7 +39,7 @@
                 type="pie"
                 width="380"
                 :options="chartOptions"
-                :series="course['series']"
+                :series="prof['series']"
               >
               </apexchart>
             </div>
@@ -54,10 +54,8 @@
 
 <script>
   export default {
-    name: "Stats",
+    name: "Stats_Profs",
     data: () => ({
-      courseId: {},
-      stats: [],
       answers: [],
       chartOptions: {
         chart: {
@@ -69,6 +67,7 @@
           breakpoint: 480,
           options: {
             chart: {
+
               width: 200
             },
             legend: {
@@ -79,67 +78,42 @@
       }
     }),
     created() {
-      this.getCourseIdRelation();
-      this.getStats();
       this.getChart();
     },
     methods: {
-      courseLink(name){
-        return {name: 'course_stats', params: {course_id: this.courseId[name]}}
-      },
-      getStats() {
-        this.axiosInstance.get('models/stats/')
-          .then(({data}) => {
-            const courseRate = Object.keys(data)
-              .map(key => ({name: key, rate: data[key]}));
-            this.stats = courseRate.sort((a, b) => {
-              return b['rate'] - a['rate'];
-            });
-          });
-      },
 
       getFormattedChartData(feedbacks) {
-        let courseStat = {};
+        let profStat = {};
         for (const fb of feedbacks) {
           const rate = fb['rate'];
-          if (!(fb.course in courseStat)) {
-            courseStat[fb.course] = [0, 0, 0, 0, 0];
+          if (!(fb.prof in profStat)) {
+            profStat[fb.prof] = [0, 0, 0, 0, 0];
           }
-          courseStat[fb.course][rate - 1]++;
+          profStat[fb.prof][rate - 1]++;
         }
 
         const formattedData = [];
-        for (const courseName in courseStat) {
+        for (const profId in profStat) {
           formattedData.push({
-            'name': courseName,
-            'series': courseStat[courseName]
+            'id': profId,
+            'series': profStat[profId]
           });
         }
         return formattedData;
       },
       getChart() {
-        this.axiosInstance.get('models/feedback_course/')
+        this.axiosInstance.get('models/feedback_prof/')
           .then(({data}) => {
             /*
             [
               {
-                name: "math",
+                id: "1",
                 series: [1,2,3,4,5]
               }
             ]
              */
-            console.log(data)
             this.answers = this.getFormattedChartData(data);
-            
-          });
-      },
-      getCourseIdRelation() {
-        this.axiosInstance.get('models/courses/')
-          .then(({data}) => {
-            this.courseId = {}
-            for (const course of data) {
-              this.courseId[course.name] = course.id;
-            }
+            console.log(this.answers)
           });
       }
     }
