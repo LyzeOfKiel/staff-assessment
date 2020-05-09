@@ -14,12 +14,12 @@
           </v-list-item>
 
           <v-list-item
-            v-for="course of stats"
-            :key="course.name"
+            v-for="prof of stats"
+            :key="prof.name"
             link
-            :to="courseLink(course.name)"
+            :to="profLink(prof.name)"
           >
-            {{course['name']}} : {{course['rate']}}
+            Prof with Id {{prof['name']}} : {{prof['rate']}}
           </v-list-item>
         </v-list-item-group>
       </v-list>
@@ -57,6 +57,7 @@
     name: "Stats_Profs",
     data: () => ({
       answers: [],
+      stats: [],
       chartOptions: {
         chart: {
           width: 380,
@@ -79,8 +80,24 @@
     }),
     created() {
       this.getChart();
+      this.getStats();
     },
     methods: {
+      profLink(name){
+        return {name: 'prof_stats', params: {prof_id: parseInt(name, 10)}}
+      },
+      getStats() {
+        this.axiosInstance.get('models/stats-profs/')
+          .then(({data}) => {
+            console.log(data)
+            const profRate = Object.keys(data)
+              .map(key => ({name: key, rate: data[key]}));
+            console.log(profRate)
+            this.stats = profRate.sort((a, b) => {
+              return b['rate'] - a['rate'];
+            });
+          });
+      },
 
       getFormattedChartData(feedbacks) {
         let profStat = {};
@@ -113,7 +130,6 @@
             ]
              */
             this.answers = this.getFormattedChartData(data);
-            console.log(this.answers)
           });
       }
     }

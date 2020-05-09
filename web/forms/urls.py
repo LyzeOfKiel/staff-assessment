@@ -3,7 +3,7 @@ from django.urls import re_path
 
 from .views import FeedbackCourseViewSet, FeedbackProfViewSet, \
     FeedbackTAViewSet, CourseViewSet, StudentViewSet, Stat, ProfViewSet, \
-    TAViewSet
+    TAViewSet, StatProf
 
 router = DefaultRouter()
 router.register(r'students', StudentViewSet, basename='students')
@@ -17,6 +17,7 @@ router.register(r'tas', TAViewSet, basename='tas')
 
 urlpatterns = [
     re_path('stats/', Stat.as_view()),
+    re_path('stats-profs/', StatProf.as_view())
 ]
 
 urlpatterns += router.urls

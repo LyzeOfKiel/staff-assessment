@@ -132,3 +132,20 @@ class Stat(APIView):
             course_name = course.name
             course_rate[course_name] = sum(rates) / len(feedback_list)
         return Response(course_rate)
+
+class StatProf(APIView):
+    def get(self, request, format=None):
+        feedbacks = FeedbackProf.objects.all()
+        serializer = FeedbackProfSerializer(feedbacks, many=True)
+        data = serializer.data
+        prof_id_feeds = {}
+        for f in data:
+            p_id = f['prof']
+            if p_id not in prof_id_feeds:
+                prof_id_feeds[p_id] = []
+            prof_id_feeds[p_id].append(f)
+        prof_rate = {}
+        for p_id, feedback_list in prof_id_feeds.items():
+            rates = map(lambda f: f['rate'], feedback_list)
+            prof_rate[p_id] = sum(rates) / len(feedback_list)
+        return Response(prof_rate)

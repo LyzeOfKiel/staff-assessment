@@ -8,6 +8,7 @@ import Login from "../components/Login";
 import Survey from "../components/Survey";
 import CourseStats from "@/components/CourseStats";
 import Stats_Profs from "@/components/Stats_Profs";
+import ProfStats from "@/components/ProfStats";
 // import Courses from '@components/Courses';
 
 Vue.use(Router);
@@ -52,7 +53,13 @@ export default new Router({
           name: 'stats_profs',
           component: Stats_Profs,
           props: true
-        }
+        },
+        {
+          path: '/stats/prof/:prof_id',
+          name: 'prof_stats',
+          component: ProfStats,
+          props: true,
+        },
       ]
     }
   ]

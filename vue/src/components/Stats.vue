@@ -90,6 +90,7 @@
       getStats() {
         this.axiosInstance.get('models/stats/')
           .then(({data}) => {
+            console.log(data)
             const courseRate = Object.keys(data)
               .map(key => ({name: key, rate: data[key]}));
             this.stats = courseRate.sort((a, b) => {
@@ -128,7 +129,6 @@
               }
             ]
              */
-            console.log(data)
             this.answers = this.getFormattedChartData(data);
             
           });
