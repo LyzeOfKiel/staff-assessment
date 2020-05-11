@@ -15,21 +15,21 @@
             </v-list-item-title>
             <v-list-item
                 link
-                :to="{name: 'survey', params:{'course': course.name, 'type':
+                :to="{name: 'survey', params:{'course': course.id, 'type':
                 'TA'
                 }}">
               TA
             </v-list-item>
             <v-list-item
                 link
-                :to="{name: 'survey', params:{'course': course.name, 'type':
+                :to="{name: 'survey', params:{'course': course.id, 'type':
                 'Prof'
                 }}">
               Prof
             </v-list-item>
             <v-list-item
                 link
-                :to="{name: 'survey', params:{'course': course.name,
+                :to="{name: 'survey', params:{'course': course.id,
                 'type':'Course'}}">
               Course
             </v-list-item>

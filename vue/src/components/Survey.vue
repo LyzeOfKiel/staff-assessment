@@ -7,7 +7,13 @@
       <v-col
         :cols="8"
       >
-        <p v-if="type === 'Prof'"></p>
+
+        <v-select
+          v-if="type === 'TA'"
+          :items="taNames"
+          label="Choose TA"
+          v-model="fields.form.TA"
+        ></v-select>
 
         <v-form @submit.prevent="submit" ref="form">
           <v-select
@@ -67,11 +73,32 @@
     name: "Survey",
     props: ['course', 'type'],
     data: () => ({
+      courseObj: null,
+      tas: [],
       fields: {form: {}},
       grade_options: [1, 2, 3, 4, 5],
-      showDialog: false
+      showDialog: false,
     }),
+    created() {
+      this.init()
+    },
+    computed: {
+      taNames: function() {
+        return this.tas.map(ta => ta.username)
+      },
+    },
+    watch: {
+      '$route'(to, from) {
+         this.init()  
+       },
+    },
     methods: {
+      init() {
+        this.getCourse()
+          .then(() => {
+            return this.getTAs();
+          })
+      },
       submit() {
         this.fields.form.course = this.course
         this.axiosInstance.post(`models/feedback_${this.type.toLowerCase()}/`, this.fields.form, {
@@ -81,7 +108,23 @@
         }).then(() => {
           this.showDialog = true
         })
-      }
+      },
+
+      getCourse() {
+        return this.axiosInstance.get(`models/courses/${this.course}/`)
+          .then(({data}) => {
+            this.courseObj = data;
+          });
+      },
+      getTAs() {
+        this.tas = []
+        for (const ta_id of this.courseObj.tas) {
+          this.axiosInstance.get(`auth/users/${ta_id}/`)
+            .then(({data}) => {
+              this.tas.push(data);
+            });
+        }
+      },
     }
   }
 

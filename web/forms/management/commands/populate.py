@@ -34,13 +34,35 @@ class Command(BaseCommand):
         s3.save()
         STUDENT.user_set.add(s3)
 
+
+        TA, created = Group.objects.get_or_create(name='TA')
+
+        ta1 = User(username='ta1')
+        ta1.set_password('ta1')
+        ta1.save()
+        TA.user_set.add(ta1)
+
+        ta2 = User(username='ta2')
+        ta2.set_password('ta2')
+        ta2.save()
+        TA.user_set.add(ta2)
+
+        ta3 = User(username='ta3')
+        ta3.set_password('ta3')
+        ta3.save()
+        TA.user_set.add(ta3)
+
+
         course1 = Course(name='Math', prof=prof1)
         course1.save()
         course1.students.add(s1, s2)
+        course1.tas.add(ta1, ta2, ta3)
 
         course2 = Course(name='Informatics', prof=prof2)
         course2.save()
         course2.students.add(s2, s3)
+        course2.tas.add(ta1, ta3)
+
 
     def handle(self, *args, **options):
         self.create_data()

@@ -21,6 +21,13 @@
           </div>
         </v-row>
       </v-container>
+      <v-list-item class="justify-center"
+        v-for="ta in tas"
+        :key="ta.id"
+      >
+        {{ta.username}}: {{taScore[ta.id]}}
+      </v-list-item>
+
     </v-card>
   </v-row>
 </template>
@@ -30,7 +37,9 @@
     name: "Stats",
     props: ['course_id'],
     data: () => ({
-      course: null,
+      tas: [],
+      taScore: {},
+      course: {tas: null},
       prof: {username: null, id: null},
       stats: {series: [0, 0, 0, 0, 0]},
       chartOptions: {
@@ -55,6 +64,7 @@
     created() {
       this.getCourse()
         .then(() => {
+          this.getTAs();
           return this.getProf();
         })
         .then(() => {
@@ -76,6 +86,25 @@
           });
       },
 
+      async getTAs() {
+        this.tas = []
+        const tmpTaScore = {}
+        for (const ta_id of this.course.tas) {
+          await this.axiosInstance.get(`auth/users/${ta_id}/`)
+            .then(({data}) => {
+              this.tas.push(data);
+              return data.id
+            })
+            .then(id => {
+              this.axiosInstance.get(`models/tas/${id}/all/`) 
+                .then(({data}) => {
+                  const total = data.reduce((acc, c) => acc + c.rate, 0) 
+                  tmpTaScore[id] = total / data.length
+                })
+            })
+        }
+        this.taScore = tmpTaScore
+      },
       getFormattedChartData(feedbacks) {
         const stat = {'series': [0, 0, 0, 0, 0]};
         for (const fb of feedbacks) {
@@ -99,8 +128,7 @@
              */
             this.stats = this.getFormattedChartData(data);
           });
-      }
-      ,
+      },
     }
   }
   ;

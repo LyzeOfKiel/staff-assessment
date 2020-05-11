@@ -58,8 +58,16 @@ class CourseSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
-    courses = CourseSerializer(many=True, read_only=True)
+    student_courses = CourseSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'courses')
+        fields = ('id', 'username', 'student_courses')
+
+
+class TASerializer(serializers.ModelSerializer):
+    ta_courses = CourseSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'ta_courses')

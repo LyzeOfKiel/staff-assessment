@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from .models import Course, FeedbackCourse, FeedbackProf, FeedbackTA
 from .serializers import FeedbackCourseGetSerializer, \
     FeedbackCoursePostSerializer, FeedbackProfSerializer, \
-    FeedbackTASerializer, StudentSerializer, \
+    FeedbackTASerializer, StudentSerializer, TASerializer, \
     CourseGetSerializer, CoursePostSerializer
 
 
@@ -29,10 +29,6 @@ class FeedbackCourseViewSet(RWSerializers, viewsets.ModelViewSet):
     authentication_classes = [authentication.JWTAuthentication]
 
     def create(self, request, *args, **kwargs):
-        course_name = request.data['course']
-        matching_courses = Course.objects.filter(name=course_name)
-        if matching_courses.count() == 1:
-            request.data['course'] = matching_courses.first().pk
         if 'student' not in request.data:
             request.data['student'] = request.user.id
         return super().create(request, *args, **kwargs)
@@ -44,10 +40,7 @@ class FeedbackProfViewSet(viewsets.ModelViewSet):
     authentication_classes = [authentication.JWTAuthentication]
 
     def create(self, request, *args, **kwargs):
-        course_name = request.data['course']
-        matching_courses = Course.objects.filter(name=course_name)
-        course = matching_courses.first()
-        request.data['course'] = course.pk
+        course = Course.objects.get(pk=request.data['course'])
         if 'student' not in request.data:
             request.data['student'] = request.user.id
         request.data['prof'] = course.prof.pk
@@ -58,6 +51,18 @@ class FeedbackTAViewSet(viewsets.ModelViewSet):
     queryset = FeedbackTA.objects.all()
     serializer_class = FeedbackTASerializer
     authentication_classes = [authentication.JWTAuthentication]
+
+    def create(self, request, *args, **kwargs):
+        ta_name = request.data['TA']
+        ta = User.objects.filter(username=ta_name).first()
+        request.data['TA'] = ta.pk
+
+        course = Course.objects.get(pk=request.data['course'])
+        request.data['course'] = course.pk
+
+        if 'student' not in request.data:
+            request.data['student'] = request.user.id
+        return super().create(request, *args, **kwargs)
 
 
 class CourseViewSet(RWSerializers, viewsets.ModelViewSet):
@@ -83,6 +88,18 @@ class CourseViewSet(RWSerializers, viewsets.ModelViewSet):
 class StudentViewSet(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
     queryset = User.objects.filter(groups__name='Student')
+
+
+class TAViewSet(viewsets.ModelViewSet):
+    serializer_class = TASerializer
+    queryset = User.objects.filter(groups__name='TA')
+
+    @action(detail=True, methods=['GET'])
+    def all(self, request, pk):
+        feedbacks = FeedbackTA.objects.filter(TA=pk)
+        serializer = FeedbackTASerializer(feedbacks, many=True)
+        data = serializer.data
+        return Response(data)
 
 
 class ProfViewSet(viewsets.ModelViewSet):
