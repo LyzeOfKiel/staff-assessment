@@ -15,11 +15,11 @@
 
           <v-list-item
             v-for="prof of stats"
-            :key="prof.name"
+            :key="prof.id"
             link
-            :to="profLink(prof.name)"
+            :to="profLink(prof.id)"
           >
-            Prof with Id {{prof['name']}} : {{prof['rate']}}
+            Prof {{profName[prof.id]}} : {{prof['rate']}}
           </v-list-item>
         </v-list-item-group>
       </v-list>
@@ -31,7 +31,7 @@
           <v-row
             justify="center"
           >
-            Prof Id: {{prof['id']}}
+            Prof {{profName[prof.id]}}
           </v-row>
           <v-row>
             <div id="chart">
@@ -58,6 +58,7 @@
     data: () => ({
       answers: [],
       stats: [],
+      profName: {},
       chartOptions: {
         chart: {
           width: 380,
@@ -81,21 +82,32 @@
     created() {
       this.getChart();
       this.getStats();
+      this.getProfIdToName();
     },
     methods: {
-      profLink(name){
-        return {name: 'prof_stats', params: {prof_id: parseInt(name, 10)}}
+     getProfIdToName() {
+        this.axiosInstance.get('models/profs/')
+          .then(({data}) => {
+            this.profName = {}
+            for (const prof of data) {
+              console.log(prof)
+              this.profName[prof.id] = prof.username;
+            }
+            console.log(this.profName)
+          });
+      },
+      profLink(id){
+        return {name: 'prof_stats', params: {prof_id: parseInt(id, 10), prof_name: this.profName[id]}}
       },
       getStats() {
         this.axiosInstance.get('models/stats-profs/')
           .then(({data}) => {
-            console.log(data)
             const profRate = Object.keys(data)
-              .map(key => ({name: key, rate: data[key]}));
-            console.log(profRate)
+              .map(key => ({id: parseInt(key, 10), rate: data[key]}));
             this.stats = profRate.sort((a, b) => {
               return b['rate'] - a['rate'];
             });
+            console.log(this.stats)
           });
       },
 
