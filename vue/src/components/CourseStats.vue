@@ -95,10 +95,10 @@
               return data.id
             })
             .then(id => {
-              this.axiosInstance.get(`models/tas/${id}/all/`) 
+              return this.axiosInstance.get(`models/tas/${id}/all/`) 
                 .then(({data}) => {
                   const total = data.reduce((acc, c) => acc + c.rate, 0) 
-                  tmpTaScore[id] = total / data.length
+                  tmpTaScore[id] = data.length > 0 ? total / data.length : 0
                 })
             })
         }
