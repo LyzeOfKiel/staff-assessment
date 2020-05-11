@@ -73,7 +73,6 @@
     },
     methods: {
       getCourse() {
-        console.log(this.course_id);
         return this.axiosInstance.get(`models/courses/${this.course_id}/`)
           .then(({data}) => {
             this.course = data;
@@ -82,7 +81,6 @@
       getProf() {
         return this.axiosInstance.get(`auth/users/${this.course.prof}/`)
           .then(({data}) => {
-            console.log(data)
             this.prof = data;
           });
       },

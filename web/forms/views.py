@@ -9,7 +9,7 @@ from .models import Course, FeedbackCourse, FeedbackProf, FeedbackTA
 from .serializers import FeedbackCourseGetSerializer, \
     FeedbackCoursePostSerializer, FeedbackProfSerializer, \
     FeedbackTASerializer, StudentSerializer, TASerializer, \
-    CourseGetSerializer, CoursePostSerializer
+    CourseGetSerializer, CoursePostSerializer, UserSerializer
 
 
 class RWSerializers(object):
