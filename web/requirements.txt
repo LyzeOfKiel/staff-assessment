@@ -1,4 +1,4 @@
-Django==3.0.5
+Django==3.0.7
 psycopg2-binary==2.8.4
 uwsgi==2.0.18
 djangorestframework==3.11.0
